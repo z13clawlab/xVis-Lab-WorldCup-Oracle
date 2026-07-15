@@ -1,46 +1,343 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xVis Lab WorldCup Oracle</title>
-    <style>
-        :root { --accent-color: #00d4ff; --card-bg: #1a1a2e; }
-        body { font-family: sans-serif; margin: 0; padding: 20px; background: #0f0f1e; color: #e0e0e0; line-height: 1.6; }
-        h1 { color: var(--accent-color); }
-        .card { background: var(--card-bg); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid #333; }
-        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-        th { background: #16213e; }
-        .footer { margin-top: 40px; padding-top: 15px; border-top: 1px solid #333; font-size: 0.9em; color: #888; }
-    </style>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>🏆 xVis Lab WorldCup Oracle</title>
+ <style>
+ :root {
+ --bg-color: #0f172a;
+ --card-bg: #1e293b;
+ --accent-color: #fbbf24;
+ --text-main: #f8fafc;
+ --text-muted: #94a3b8;
+ --border-color: #334155;
+ }
+ body {
+ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ background-color: var(--bg-color);
+ color: var(--text-main);
+ margin: 0;
+ padding: 0;
+ line-height: 1.6;
+ }
+ .container {
+ max-width: 1100px;
+ margin: 0 auto;
+ padding: 20px;
+ }
+ header {
+ text-align: center;
+ margin-bottom: 30px;
+ padding: 20px 0;
+ }
+ h1 {
+ font-size: 2.5rem;
+ color: var(--accent-color);
+ margin: 0;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ }
+ .nav-bar {
+ display: flex;
+ justify-content: center;
+ gap: 10px;
+ margin-bottom: 40px;
+ }
+ .nav-btn {
+ background: var(--card-bg);
+ border: 1px solid var(--border-color);
+ color: var(--text-muted);
+ padding: 10px 20px;
+ cursor: pointer;
+ border-radius: 8px;
+ font-weight: bold;
+ transition: all 0.3s;
+ }
+ .nav-btn.active {
+ background: var(--accent-color);
+ color: var(--bg-color);
+ border-color: var(--accent-color);
+ }
+ .page {
+ display: none;
+ animation: fadeIn 0.4s ease;
+ }
+ .page.active {
+ display: block;
+ }
+ @keyframes fadeIn {
+ from { opacity: 0; transform: translateY(10px); }
+ to { opacity: 1; transform: translateY(0); }
+ }
+ .section-title {
+ font-size: 1.8rem;
+ border-left: 5px solid var(--accent-color);
+ padding-left: 15px;
+ margin: 20px 0;
+ }
+ .grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+ gap: 20px;
+ }
+ .card {
+ background: var(--card-bg);
+ border: 1px solid var(--border-color);
+ border-radius: 12px;
+ padding: 20px;
+ cursor: pointer;
+ }
+ .match-header {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ font-size: 1.3rem;
+ font-weight: bold;
+ margin-bottom: 15px;
+ padding-bottom: 10px;
+ border-bottom: 1px solid var(--border-color);
+ }
+ .prediction {
+ font-size: 1.5rem;
+ text-align: center;
+ color: var(--accent-color);
+ font-weight: 800;
+ margin: 10px 0;
+ }
+ .analysis-box {
+ font-size: 0.9rem;
+ color: var(--text-muted);
+ background: rgba(0,0,0,0.2);
+ padding: 10px;
+ border-radius: 8px;
+ }
+ .schedule-info {
+ font-size: 0.85rem;
+ color: var(--accent-color);
+ text-align: center;
+ margin-bottom: 10px;
+ font-weight: bold;
+ opacity: 0.9;
+ }
+ .champion-box {
+ text-align: center;
+ background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+ border: 2px solid var(--accent-color);
+ padding: 30px;
+ border-radius: 20px;
+ margin: 40px 0;
+ }
+ .champion-name {
+ font-size: 3.5rem;
+ color: var(--accent-color);
+ font-weight: 900;
+ margin: 10px 0;
+ }
+ .footer {
+ text-align: center;
+ color: var(--text-muted);
+ font-size: 0.8rem;
+ margin-top: 50px;
+ padding-bottom: 30px;
+ }
+ </style>
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>xVis Lab WorldCup Oracle</h1>
-    <p>2026 FIFA World Cup Prediction Engine</p>
+ <div class="container">
+ <header>
+ <h1>🏆 xVis Lab WorldCup Oracle</h1>
+ <p class="subtitle">2026 世界盃 數據分析中心</p>
+ </header>
 
-    <div class="card">
-        <h2>Semi-Final: France vs Spain (Completed)</h2>
-        <p><strong>Actual Result:</strong> Spain 2 - 0 France</p>
-        <p><strong>Oracle v3.1.1 Prediction:</strong> France favored (35% win prob) &mdash; MISSED</p>
-        <p><strong>Training Case:</strong> Added multi-goal buckets, recalibrated psychology weighting.</p>
-    </div>
+ <div class="nav-bar">
+ <button class="nav-btn active" onclick="showPage('semifinals')">4強預測</button>
+ <button class="nav-btn" onclick="showPage('predictions')">8強預測</button>
+ <button class="nav-btn" onclick="showPage('round16')">16強全覽</button>
+ <button class="nav-btn" onclick="showPage('groups')">小組賽回顧</button>
+ </div>
 
-    <div class="card">
-        <h2>Semi-Final: England vs Argentina (Prediction v3.1.2)</h2>
-        <table>
-            <tr><th>Score</th><th>Probability</th><th>Key Reasoning</th></tr>
-            <tr><td>England 2-1 Argentina</td><td>35%</td><td>Physicality + clinical finishing</td></tr>
-            <tr><td>England 2-0 Argentina</td><td>25%</td><td>Spain case: physical dominance trumps tactics</td></tr>
-            <tr><td>Argentina 2-1 England</td><td>20%</td><td>Messi creative genius</td></tr>
-            <tr><td>England 3-1 Argentina</td><td>15%</td><td>Set-piece dominance</td></tr>
-            <tr><td>Argentina 2-0 England</td><td>5%</td><td>Core trio fitness risk</td></tr>
-        </table>
-        <p><strong>New Rules:</strong> Multi-goal buckets added; Curveball Rule (England &gt;55% possession &rarr; Argentina 2-0 &gt;5%); market odds integrated.</p>
-    </div>
+ <!-- Page: Semifinals (4強) -->
+ <div id="semifinals" class="page active">
+ <div class="section-title">🏆 4強賽詳細分析</div>
+ <div class="grid">
+ <div class="card" onclick="showMatchDetails('france-spain')">
+ <div class="match-header"><span>🇫🇷 法國</span><span>vs</span><span>🇪🇸 西班牙</span></div>
+ <div class="prediction">法國 2 - 1 西班牙</div>
+ <div class="analysis-box">點擊查看詳細委員會預測分析報告</div>
+ </div>
+ <div class="card" onclick="showMatchDetails('england-argentina')">
+ <div class="match-header"><span>🏴󠁧󠁢󠁥󠁮󠁧󠁿 英格蘭</span><span>vs</span><span>🇦🇷 阿根廷</span></div>
+ <div class="prediction">阿根廷 2 - 1 英格蘭</div>
+ <div class="analysis-box">點擊查看詳細委員會預測分析報告</div>
+ </div>
+ </div>
+ </div>
 
-    <div class="footer">
-        Generated by <strong>Powered by xVis</strong> | 2026 FIFA World Cup Oracle | v3.1.2
-    </div>
+ <!-- Page: Predictions (8強) -->
+ <div id="predictions" class="page">
+ <div class="section-title">🏟️ 8強賽對陣預測</div>
+ <div class="grid">
+ <div class="card" onclick="showMatchDetails('argentina-switzerland')">
+ <div class="match-header"><span>🇦🇷 阿根廷</span><span>vs</span><span>🇨🇭 瑞士</span></div>
+ <div class="prediction">Argentina 2 - 0 Switzerland</div>
+ <div class="analysis-box"><strong>委員會最新分析：</strong> 點擊查看詳細報告</div>
+ </div>
+ <div class="card" onclick="showMatchDetails('france-morocco')">
+ <div class="match-header"><span>🇫🇷 法國</span><span>vs</span><span>🇲🇦 摩洛哥</span></div>
+ <div class="prediction">France 1 - 0 Morocco</div>
+ <div class="analysis-box"><strong>委員會最新分析：</strong> 點擊查看詳細報告</div>
+ </div>
+ <div class="card" onclick="showMatchDetails('norway-england')">
+ <div class="match-header"><span>🇳🇴 挪威</span><span>vs</span><span>🏴󠁧󠁢󠁥󠁮󠁧󠁿 英格蘭</span></div>
+ <div class="prediction">England 3 - 2 Norway</div>
+ <div class="analysis-box"><strong>委員會最新分析：</strong> 點擊查看詳細報告</div>
+ </div>
+ <div class="card" onclick="showMatchDetails('spain-belgium')">
+ <div class="match-header"><span>🇪🇸 西班牙</span><span>vs</span><span>🇧🇪 比利時</span></div>
+ <div class="prediction">Spain 2 - 1 Belgium</div>
+ <div class="analysis-box"><strong>委員會最新分析：</strong> 點擊查看詳細報告</div>
+ </div>
+ </div>
+ </div>
+
+ <div id="argentina-switzerland-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1000; padding:20px; box-sizing:border-box; overflow-y:auto;" onclick="this.style.display='none'">
+ <div style="background:var(--card-bg); max-width:500px; margin:20px auto; padding:25px; border-radius:16px; border:1px solid var(--accent-color); max-height:80vh; overflow-y:auto;" onclick="event.stopPropagation()">
+ <h2 style="color:var(--accent-color); margin-top:0;">Argentina vs Switzerland - 詳細預測分析</h2>
+ <p><strong>委員會多維度深度分析：</strong></p>
+ <ul style="padding-left: 20px;">
+ <li><strong>戰術博弈 (Tactical)</strong>: 阿根廷運用 4-3-1-2 陣型，圍繞中場創造力進行滲透，旨在通過精密傳接打破密集防守；瑞士則以嚴密的 3-4-2-1 防守陣型對抗，強調緊湊防守與快速反擊。</li>
+ <li><strong>控球與效率 (Efficiency)</strong>: 阿根廷控球率預期佔優，擅長在最終三區尋找空間；瑞士則憑藉高效率，力求在有限機會中通過定位球或反擊獲利。</li>
+ <li><strong>體能與深度 (Depth)</strong>: 阿根廷陣容深度允許在比賽後段進行具針對性的換人以維持侵略性；瑞士的防守體系對先發主力依賴度較高。</li>
+ <li><strong>心態與壓力 (Psychology)</strong>: 阿根廷背負巨大爭冠期望，賽事經驗豐富；瑞士展現出極強的抗壓能力與團隊紀律，已適應處於 underdog 的心理定位。</li>
+ </ul>
+ <h3>概率分布</h3>
+ <ul style="padding-left: 20px;">
+ <li>Argentina 2 - 0 Switzerland (40%) - 阿根廷精準控制節奏，破除防守</li>
+ <li>Argentina 1 - 0 Switzerland (30%) - 阿根廷小勝，瑞士防線頑強</li>
+ <li>Switzerland 1 - 0 Argentina (15%) - 瑞士反擊得手並守住比分</li>
+ <li>0 - 0 (15%) - 雙方防守僵持進入加時</li>
+ </ul>
+ <button onclick="this.parentElement.parentElement.style.display='none'" style="width:100%; background:var(--accent-color); padding:12px; border:none; border-radius:8px; cursor:pointer;">關閉</button>
+ </div>
+ </div>
+
+ <div id="france-morocco-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1000; padding:20px; box-sizing:border-box; overflow-y:auto;" onclick="this.style.display='none'">
+ <div style="background:var(--card-bg); max-width:500px; margin:20px auto; padding:25px; border-radius:16px; border:1px solid var(--accent-color); max-height:80vh; overflow-y:auto;" onclick="event.stopPropagation()">
+ <h2 style="color:var(--accent-color); margin-top:0;">France vs Morocco - 詳細預測分析</h2>
+ <p><strong>委員會多維度深度分析：</strong></p>
+ <ul style="padding-left: 20px;">
+ <li><strong>戰術博弈 (Tactical)</strong>: 法國傾向於使用 4-3-3 陣型，通過極強的邊路技術與中場控制力尋找突破口；摩洛哥則展現出卓越的 4-5-1 低位防守紀律，利用緊湊的防線與快速的垂直反擊來阻礙法國的節奏。</li>
+ <li><strong>控球與效率 (Efficiency)</strong>: 法國在控球率與創造機會數上具有絕對優勢；摩洛哥則在防守端效率極高，試圖在有限的反擊機會中完成致命一擊。</li>
+ <li><strong>體能與深度 (Depth)</strong>: 法國擁有世界頂級的板凳深度，能夠在比賽後半段維持高強度壓迫；摩洛哥對主力陣容的依賴度較高，體能消耗將是關鍵。</li>
+ <li><strong>心態與壓力 (Psychology)</strong>: 法國背負著強大的奪冠期望與歷史包袱；摩洛哥則帶著強烈的「黑馬」信念與極高的團隊凝聚力應戰。</li>
+ </ul>
+ <h3>概率分布</h3>
+ <ul style="padding-left: 20px;">
+ <li>France 1 - 0 Morocco (45%) - 法國依靠技術優勢小勝</li>
+ <li>France 2 - 0 Morocco (25%) - 法國全面壓制</li>
+ <li>0 - 0 (15%) - 摩洛哥防線成功抵擋</li>
+ <li>1 - 1 (15%) - 摩洛哥反擊得手進入加時</li>
+ </ul>
+ <button onclick="this.parentElement.parentElement.style.display='none'" style="width:100%; background:var(--accent-color); padding:12px; border:none; border-radius:8px; cursor:pointer;">關閉</button>
+ </div>
+ </div>
+
+ <div id="norway-england-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; padding:20px; box-sizing:border-box; overflow-y:auto;" onclick="this.style.display='none'">
+ <div style="background:var(--card-bg); max-width:500px; margin:20px auto; padding:25px; border-radius:16px; border:1px solid var(--accent-color); max-height:80vh; overflow-y:auto;" onclick="event.stopPropagation()">
+ <h2 style="color:var(--accent-color); margin-top:0;">Norway vs England - 詳細預測分析</h2>
+ <p><strong>委員會多維度深度分析：</strong></p>
+ <ul style="padding-left: 20px;">
+ <li><strong>戰術博弈 (Tactical)</strong>: 挪威採用 4-3-3/4-4-2 混合陣型，核心圍繞哈蘭德的縱深跑動，旨在利用英格蘭高位防守後的空間；英格蘭則以 4-2-3-1 陣型為主，通過高強度壓迫與技術優勢掌控節奏，試圖通過精準傳導瓦解挪威的防守組織。</li>
+ <li><strong>控球與效率 (Efficiency)</strong>: 挪威反擊效率極高，依賴哈蘭德的門前把握能力，所需射門次數遠低於平均；英格蘭憑藉邊路突破與定位球創造大量機會，但在防守轉換時偶有空檔。</li>
+ <li><strong>體能與深度 (Depth)</strong>: 英格蘭板凳深度極佳，預計 60-75 分鐘的換人調整將注入關鍵體能，從而控制比賽末段節奏；挪威相對依賴主力，後備球員在強度維持上可能面臨挑戰。</li>
+ <li><strong>心態與壓力 (Psychology)</strong>: 挪威以歷史性闖入八強的「無懼」心態應戰；英格蘭作為爭冠熱門，背負「足球回家」的歷史期望，承受較大心理壓力，但大賽經驗豐富。</li>
+ </ul>
+ <h3>概率分布</h3>
+ <ul style="padding-left: 20px;">
+ <li>England 3 - 2 Norway (38%) - 高比分對攻，英格蘭憑藉深度勝出</li>
+ <li>England 2 - 1 Norway (28%) - 英格蘭控球獲勝</li>
+ <li>Norway 2 - 1 England (20%) - 挪威反擊得手</li>
+ <li>1 - 1 (14%) - 戰術僵局進入加時</li>
+ </ul>
+ <button onclick="this.parentElement.parentElement.style.display='none'" style="width:100%; background:var(--accent-color); padding:12px; border:none; border-radius:8px; cursor:pointer;">關閉</button>
+ </div>
+ </div>
+
+ <div id="semifinals" class="page">
+ <div class="section-title">🏆 4強賽詳細分析</div>
+ <div class="grid">
+ <div class="card" onclick="showMatchDetails('france-spain')">
+ <div class="match-header"><span>🇫🇷 法國</span><span>vs</span><span>🇪🇸 西班牙</span></div>
+ <div class="prediction">法國 2 - 1 西班牙</div>
+ <div class="analysis-box">點擊查看詳細委員會預測分析報告</div>
+ </div>
+ <div class="card" onclick="showMatchDetails('argentina-england')">
+ <div class="match-header"><span>🇦🇷 阿根廷</span><span>vs</span><span>🏴󠁧󠁢󠁥󠁮󠁧󠁿 英格蘭</span></div>
+ <div class="prediction">英格蘭 2 - 1 阿根廷</div>
+ <div class="analysis-box">點擊查看詳細委員會預測分析報告</div>
+ </div>
+ </div>
+ </div>
+
+ <div id="france-spain-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1000; padding:20px; box-sizing:border-box; overflow-y:auto;" onclick="this.style.display='none'">
+ <div style="background:var(--card-bg); max-width:500px; margin:20px auto; padding:25px; border-radius:16px; border:1px solid var(--accent-color); max-height:80vh; overflow-y:auto;" onclick="event.stopPropagation()">
+ <h2 style="color:var(--accent-color); margin-top:0;">France vs Spain - 詳細預測分析</h2>
+ <p><strong>委員會多維度深度分析：</strong></p>
+ <ul style="padding-left: 20px;">
+ <li><strong>戰術博弈 (Tactical)</strong>: 法國採用 4-3-3/4-2-3-1 陣型，強調「垂直轉換與爆炸性反擊」；西班牙則運用精密控球與高位壓迫，追求「區域控制與空間壓縮」。</li>
+ <li><strong>關鍵對位 (Key Matchups)</strong>: Mbappé vs Laporte/Le Normand 的速度與定位之戰；Rodri vs Camavinga/Tchouaméni 的中場控制權爭奪。</li>
+ <li><strong>心理韌性 (Psychology)</strong>: 法國擁有深厚的「冠軍 DNA」與大賽冷靜度；西班牙則帶著「世代更替」的飢渴感與技術自信。</li>
+ </ul>
+ <h3>分數概率分布 (Score Probability)</h3>
+ <ul style="padding-left: 20px;">
+ <li>France 2 - 1 Spain (15%) - 法國反擊效率突破控球</li>
+ <li>France 1 - 0 Spain (12%) - 典型的法國式小勝</li>
+ <li>Spain 1 - 1 France (11%) - 戰術僵局進入加時</li>
+ <li>Spain 1 - 0 France (10%) - 西班牙成功控制節奏</li>
+ <li>France 2 - 0 Spain (8%) - 法國全面壓制反擊</li>
+ </ul>
+ <button onclick="this.parentElement.parentElement.style.display='none'" style="width:100%; background:var(--accent-color); padding:12px; border:none; border-radius:8px; cursor:pointer;">關閉</button>
+ </div>
+ </div>
+
+ <div id="england-argentina-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1000; padding:20px; box-sizing:border-box; overflow-y:auto;" onclick="this.style.display='none'">
+ <div style="background:var(--card-bg); max-width:500px; margin:20px auto; padding:25px; border-radius:16px; border:1px solid var(--accent-color); max-height:80vh; overflow-y:auto;" onclick="event.stopPropagation()">
+ <h2 style="color:var(--accent-color); margin-top:0;">England vs Argentina - 詳細預測分析</h2>
+ <p><strong>委員會多維度深度分析：</strong></p>
+ <ul style="padding-left: 20px;">
+ <li><strong>戰術博弈 (Tactical)</strong>: 英格蘭追求「結構化進攻與高強度壓迫」；阿根廷則以「反應式防守與情感驱动的快速反擊」見長，擅長在壓力下保持冷靜。</li>
+ <li><strong>關鍵對位 (Key Matchups)</strong>: Bellingham vs Mac Allister 的中場博弈；England 的後防線在面對 Argentina 的靈活穿透時的應對能力。</li>
+ <li><strong>心理韌性 (Psychology)</strong>: 英格蘭面臨巨大的「突破歷史」心理負擔；阿根廷則擁有極強的「集體信仰」與 knockout stage 的精神優勢。</li>
+ </ul>
+ <h3>分數概率分布 (Score Probability)</h3>
+ <ul style="padding-left: 20px;">
+ <li>Argentina 2 - 1 England (16%) - 阿根廷利用精神優勢勝出</li>
+ <li>Argentina 1 - 0 England (13%) - 典型的阿根廷式高效反擊</li>
+ <li>1 - 1 (12%) - 戰術僵局，進入加時</li>
+ <li>England 1 - 0 Argentina (11%) - 英格蘭結構化進攻得手</li>
+ <li>Argentina 2 - 0 England (9%) - 阿根廷全面掌控節奏</li>
+ </ul>
+ <button onclick="this.parentElement.parentElement.style.display='none'" style="width:100%; background:var(--accent-color); padding:12px; border:none; border-radius:8px; cursor:pointer;">關閉</button>
+ </div>
+ </div>
+
+
+ <div class="footer">
+ Generated by <strong>Powered by xVis</strong> | 2026 FIFA World Cup Oracle | v3.1.1
+ </div>
+ </div>
+ <script>
+ function showMatchDetails(id) {
+ document.getElementById(id + '-modal').style.display = 'block';
+ }
+ function showPage(pageId) {
+ document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+ document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+ document.getElementById(pageId).classList.add('active');
+ event.currentTarget.classList.add('active');
+ }
+ </script>
 </body>
 </html>
